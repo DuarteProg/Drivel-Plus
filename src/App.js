@@ -10,9 +10,10 @@ import TokenContext from "./Contexts/AuthContext";
 
 export default function App() {
   const [token, setToken] = useState();
+  const [member, setMember] = useState()
 
   return (
-    <TokenContext.Provider value={{token, setToken}}>
+    <TokenContext.Provider value={{token, setToken, member, setMember}}>
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<LoginPage />} />
