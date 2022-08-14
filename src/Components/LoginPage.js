@@ -1,8 +1,8 @@
 import { useNavigate, Link } from "react-router-dom";
 import { useState, useContext } from "react";
-import TokenContext from "../Contexts/AuthContext";
 import axios from "axios";
 import styled from "styled-components";
+import TokenContext from "../Contexts/AuthContext";
 
 
 export default function LoginPage() {
@@ -10,6 +10,9 @@ export default function LoginPage() {
   const navigate = useNavigate();
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
+  // const { item, setDadoshome } = useContext(TokenContext);
+  const localMember = JSON.parse(localStorage.getItem("member"))
+  
 
 
   function confirmarLogin(event) {
@@ -22,13 +25,29 @@ export default function LoginPage() {
     promise.then((response) => {
      const {data} = response;
     
-      localStorage.setItem("token", JSON.stringify({
-        headers: {
-          "Authorization": `Bearer ${data.token}`
-        }
-      }));
+if(localMember !== null){
+  localStorage.setItem("token", JSON.stringify({
+    headers: {
+      "Authorization": `Bearer ${data.token}`
+    }
+  }));
+  JSON.parse(localStorage.getItem("dadositem"))
+  
+  navigate("/home");
+  console.log("if")
+}else{
+  localStorage.setItem("token", JSON.stringify({
+    headers: {
+      "Authorization": `Bearer ${data.token}`
+    }
+  }));
+  navigate("/subscriptions");
+  console.log("else")
+}
 
-      navigate("/subscriptions");
+     
+
+      
     });
   }
 

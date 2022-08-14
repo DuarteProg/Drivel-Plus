@@ -23,14 +23,16 @@ export default function SignUpPage() {
             name,
             cpf,
             password
+            
         });
         promise.then((response) => {
 const {data} = response
 console.log(data)
+
             navigate("/")
         })
     }
-
+   
     return (<>
         <Container>
         

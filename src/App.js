@@ -12,9 +12,10 @@ export default function App() {
   const [token, setToken] = useState();
   const [member, setMember] = useState()
   const [item, setItem] = useState();
+  const [dadosHome, setDadosHome] = useState()
 
   return (
-    <TokenContext.Provider value={{token, setToken, member, setMember, item, setItem}}>
+    <TokenContext.Provider value={{token, setToken, member, setMember, item, setItem, dadosHome, setDadosHome}}>
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<LoginPage />} />

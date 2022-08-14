@@ -1,15 +1,17 @@
 import styled from "styled-components"
 import { useContext } from "react";
 import TokenContext from "../Contexts/AuthContext";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 
 export default function TelaHome(){
-    const { item, token } = useContext(TokenContext);
+    const { item, dadoshome } = useContext(TokenContext);
     const navigate = useNavigate();
-    console.log(item)
+    console.log(dadoshome)
     const localToken = JSON.parse(localStorage.getItem("token"))
+    const localNome = JSON.parse(localStorage.getItem("nome"))
+    
 
     function TrocarPlano(){ 
         
@@ -24,16 +26,24 @@ export default function TelaHome(){
       });
     }
 
+    function CancelarPlano(){
+        
+            const promise = axios.delete(
+              `https://mock-api.driven.com.br/api/v4/driven-plus/subscriptions`,
+              localToken
+            );
+          
+          
+          promise.then((response) => {
+            const { data } = response;
+            console.log(data)
+            navigate("/subscriptions");
 
+          });
+         
+    }
 
-
-
-
-
-
-
-
-
+    JSON.parse(localStorage.getItem("dadositem"))
 
 // função brinde
 function Brinde(props){
@@ -49,7 +59,6 @@ return (
 
 // função planHome
 function PlanHome(props){
-    console.log(item)
 const { image } = props.item
 return(
     <Container1>
@@ -57,7 +66,7 @@ return(
 <img src={image} alt="imagem"/>
 <ion-icon name="person-circle"></ion-icon>
 </Header1>
-<Nome1>Olá, Fulano</Nome1>
+<Nome1>Olá, {localNome}</Nome1>
 <Main1>{
 item.data.membership.perks.map((brindes, index) => {
 const {title, link} = brindes;
@@ -65,7 +74,7 @@ return <Brinde title={title} key={index} link={link}/>
 })
 }</Main1>
 <Footer1><h1 onClick={TrocarPlano}>Mudar Plano</h1>
-<h2>Cancelar Plano</h2>
+<h2 onClick={CancelarPlano}>Cancelar Plano</h2>
 </Footer1>
     </Container1>
 )

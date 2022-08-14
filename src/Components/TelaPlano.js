@@ -1,7 +1,7 @@
 import styled from "styled-components"
 import { useState, useEffect, useContext } from "react";
 import axios from "axios";
-import { useNavigate, useParams } from "react-router-dom"
+import { useNavigate, useParams, Link } from "react-router-dom"
 import TokenContext from "../Contexts/AuthContext";
 
 import beneficios from "../Assets/img/beneficios.png"
@@ -9,7 +9,7 @@ import grana from "../Assets/img/grana.png"
 
 
 export default function TelaPlano(){
-  const { setItem, item } = useContext(TokenContext);
+  const { setItem, item, setDadosHome } = useContext(TokenContext);
   const { planoID } = useParams();
   const navigate = useNavigate();
    const [membershipId, setMembershipId] = useState();
@@ -20,7 +20,8 @@ export default function TelaPlano(){
     const [plano, setPlano] = useState("");
     const [click, setClick] = useState(false)
     const localToken = JSON.parse(localStorage.getItem("token"))
- 
+    
+    
   
     
     //Parte do post
@@ -33,6 +34,8 @@ export default function TelaPlano(){
         securityNumber,
         expirationDate
       }
+      localStorage.setItem("dadositem", JSON.stringify(item))
+
     const URL = `https://mock-api.driven.com.br/api/v4/driven-plus/subscriptions`;
     const promise = axios.post(URL , creditCard, 
       localToken
@@ -40,11 +43,16 @@ export default function TelaPlano(){
   )
     promise.then((response) => {
       const {data} = response;
+      setDadosHome(creditCard)
       setItem({data: data, creditCard: creditCard})
      console.log({data: data, creditCard: creditCard} );
      navigate("/home");
     });
   }
+  localStorage.setItem("member", JSON.stringify(membershipId))
+  localStorage.setItem("nome", JSON.stringify(cardName))
+  
+  
 
     //effet do get
     useEffect(() => {
@@ -108,9 +116,11 @@ return(
     // função principal
     return (<>
         <Container>
+        <Link to={`/subscriptions`}>
             <Setinha>
             <ion-icon name="arrow-back-outline"></ion-icon>
             </Setinha>
+            </Link>
             <Main>
 
   
@@ -123,7 +133,7 @@ return(
             </Main>
             <Input>
             
-        
+            <DisplayInput1>
           <input
             type="text"
             value={cardName}
@@ -139,8 +149,9 @@ return(
             onChange={(e) => setCardNumber(e.target.value)}
             required
           />
+          </DisplayInput1>
           <DisplayInput>
-            <DisplayInput1>
+            <DisplayInput2>
            <input
             type="text"
             value={securityNumber}
@@ -148,8 +159,8 @@ return(
             onChange={(e) => setSecurityNumber(e.target.value)}
             required
           />{" "}
-          <br /></DisplayInput1>
-          <DisplayInput2>
+          <br /></DisplayInput2>
+          <DisplayInput3>
           <input
             type="text"
             value={expirationDate}
@@ -157,7 +168,7 @@ return(
             onChange={(e) => setExpirationDate(e.target.value)}
             required
           />
-          </DisplayInput2>
+          </DisplayInput3>
           </DisplayInput>
           <Botao>
             <button onClick={() => setClick(true)} >ASSINAR</button>
@@ -186,12 +197,25 @@ gap: 9px;
 
 `
 const DisplayInput1 = styled.div`
-width: 145px;
+input{
+  width: 299px;
 height: 52px;
+
+}
 `
 const DisplayInput2 = styled.div`
-width: 145px;
-height: 52px;
+input{
+  width: 135px;
+  height: 52px;
+
+}
+`
+const DisplayInput3 = styled.div`
+input{
+  width: 134px;
+  height: 52px;
+
+}
 `
 const Botoes = styled.div`
 display: flex;
@@ -286,7 +310,7 @@ ion-icon{
 ` 
 const Logo1 = styled.div`
 img{
-  margin-top: 35px;
+  margin-top: 20px;
 margin-left: 100px;
 }
 p{
@@ -329,8 +353,6 @@ img{
 const Input = styled.div`
 margin-left: 30px;
 input{
-  width: 299px;
-height: 52px;
 border-radius: 8px;
 margin-bottom: 8px;
 padding-left: 14px;
