@@ -6,7 +6,7 @@ import styled from "styled-components";
 
 
 export default function LoginPage() {
-  const { setToken } = useContext(TokenContext);
+  
   const navigate = useNavigate();
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
@@ -21,7 +21,13 @@ export default function LoginPage() {
     });
     promise.then((response) => {
      const {data} = response;
-      setToken(data.token)
+    
+      localStorage.setItem("token", JSON.stringify({
+        headers: {
+          "Authorization": `Bearer ${data.token}`
+        }
+      }));
+
       navigate("/subscriptions");
     });
   }

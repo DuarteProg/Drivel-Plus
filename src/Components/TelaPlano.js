@@ -5,11 +5,11 @@ import { useNavigate, useParams } from "react-router-dom"
 import TokenContext from "../Contexts/AuthContext";
 
 import beneficios from "../Assets/img/beneficios.png"
-// import grana from "../Assets/img/grana.png"
+import grana from "../Assets/img/grana.png"
 
 
 export default function TelaPlano(){
-  const { token } = useContext(TokenContext);
+  const { setItem, item } = useContext(TokenContext);
   const { planoID } = useParams();
   const navigate = useNavigate();
    const [membershipId, setMembershipId] = useState();
@@ -19,27 +19,29 @@ export default function TelaPlano(){
     const [expirationDate, setExpirationDate] = useState();
     const [plano, setPlano] = useState("");
     const [click, setClick] = useState(false)
+    const localToken = JSON.parse(localStorage.getItem("token"))
  
   
     
     //Parte do post
     function FinalizarPlano(e){ 
       e.preventDefault();
+      const creditCard = {
+        membershipId,
+        cardName,
+        cardNumber,
+        securityNumber,
+        expirationDate
+      }
     const URL = `https://mock-api.driven.com.br/api/v4/driven-plus/subscriptions`;
-    const promise = axios.post(URL , {
-      membershipId,
-      cardName,
-      cardNumber,
-      securityNumber,
-      expirationDate,
-    }, {
-      headers: {
-          "Authorization": `Bearer ${token}`
-        }
-  })
+    const promise = axios.post(URL , creditCard, 
+      localToken
+      
+  )
     promise.then((response) => {
-     const {data} = response;
-     console.log(data);
+      const {data} = response;
+      setItem({data: data, creditCard: creditCard})
+     console.log({data: data, creditCard: creditCard} );
      navigate("/home");
     });
   }
@@ -48,11 +50,7 @@ export default function TelaPlano(){
     useEffect(() => {
       const promise = axios.get(
         `https://mock-api.driven.com.br/api/v4/driven-plus/subscriptions/memberships/${planoID}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
+        localToken
       );
     
     
@@ -60,7 +58,7 @@ export default function TelaPlano(){
       const { data } = response;
       console.log(data)
       setPlano(data)
-      
+      setItem({data: data})
     });
   }, [])
   
@@ -97,7 +95,10 @@ return(
  const {title, id, membershipId} = perk;
   return <Perk membershipId={membershipId} title={title} id={id} key={id} index={index}/>
 })}
-<p>{price}</p>
+<Main3>
+<img src={grana} alt="imagem"/> Preço:
+<p>R$: {price} cobrados mensalmente</p>
+</Main3>
 </Main1>
   </Container1>
 )
@@ -138,6 +139,8 @@ return(
             onChange={(e) => setCardNumber(e.target.value)}
             required
           />
+          <DisplayInput>
+            <DisplayInput1>
            <input
             type="text"
             value={securityNumber}
@@ -145,7 +148,8 @@ return(
             onChange={(e) => setSecurityNumber(e.target.value)}
             required
           />{" "}
-          <br />
+          <br /></DisplayInput1>
+          <DisplayInput2>
           <input
             type="text"
             value={expirationDate}
@@ -153,21 +157,21 @@ return(
             onChange={(e) => setExpirationDate(e.target.value)}
             required
           />
+          </DisplayInput2>
+          </DisplayInput>
           <Botao>
-            <button onClick={() => setClick(true)} >Login</button>
+            <button onClick={() => setClick(true)} >ASSINAR</button>
           </Botao>
-       
-      
             </Input>
             <Botao></Botao>
         </Container>
             {click ? <Modal> 
-            <Modal1>
             <ion-icon onClick={(() =>setClick(false))} name="close-outline"></ion-icon>
-            <p>opa</p>
+            <Modal1>
+            <p>Tem certeza que deseja assinar o plano Driven Plus (R$ {item.data.price})?</p>
             <Botoes>
-            <button onClick={(() =>setClick(false))}>nao</button>
-            <button onClick={FinalizarPlano}>sim</button>
+            <h5 onClick={(() =>setClick(false))}>nao</h5>
+            <h6 onClick={FinalizarPlano}>sim</h6>
             </Botoes>
             </Modal1>
             </Modal>:""}
@@ -176,50 +180,106 @@ return(
 }
 
 
+const DisplayInput = styled.div`
+display: flex;
+gap: 9px;
+
+`
+const DisplayInput1 = styled.div`
+width: 145px;
+height: 52px;
+`
+const DisplayInput2 = styled.div`
+width: 145px;
+height: 52px;
+`
 const Botoes = styled.div`
-button{
+display: flex;
+h5{
   width: 95px;
 height: 52px;
+left: 86px;
+top: 376px;
+display: flex;
+align-items: center;
+justify-content: center;
+background: #CECECE;
+border-radius: 8px;
+margin-top: 30px;
+}
+h6{
+  width: 95px;
+height: 52px;
+display: flex;
+align-items: center;
+justify-content: center;
+margin-left: 14px;
+
+background: #FF4791;
+border-radius: 8px;
+margin-top: 30px;
+}
+`
+const Modal = styled.div`
+width: 375px;
+height: 667px;
+position: relative;
+display: flex;
+align-items: center;
+justify-content: center;
+z-index: 1;
+
+background: rgba(0, 0, 0, 0.7);
+ion-icon{
+ color: white;
+ position: absolute;
+ top: 0;
+ right: 0;
+margin-right: 30px;
+margin-top: 35px;
+width: 28px;
+height: 24px;
+color: #000;
+background: #FFFFFF;
+border-radius: 3px;
 }
 `
 const Modal1 = styled.div`
-width: 375px;
-height: 667px;
-background: rgba(0, 0, 0, 0.7);
+width: 248px;
+height: 210px;
 display: flex;
 align-items: center;
 justify-content: center;
 flex-direction: column;
-ion-icon{
+background: #FFFFFF;
+border-radius: 12px;
+p{
+  width: 204px;
+  height: auto;
+  font-family: 'Roboto';
+font-style: normal;
+font-weight: 700;
+font-size: 18px;
+line-height: 21px;
 
+color: #000000;
 }
-`
-const Modal = styled.div`
-z-index: 1;
-position: absolute;
-bottom: -210px;
-right: 0;
-span{
-  width: 30px;
-  height: 30px;
-  background: rgba(0, 0, 0, 0.7);
-}
-ion-icon{
- 
-  font-size: 28px;
-}
+
 `
 
 const Container = styled.div`
-position: relative;
+position: absolute;
 background: #0E0E13;
 color: white;
+width: 375px;
+height: 667px;
+
 `
 const Setinha = styled.div`
 color: #FFFFFF;
 transform: matrix(1, 0, 0, -1, 0, 0);
 ion-icon{
-  margin-left: 22px;
+  margin-left: 15px;
   margin-bottom: 24px;
   font-size: 28px;
 }
@@ -227,12 +287,12 @@ ion-icon{
 const Logo1 = styled.div`
 img{
   margin-top: 35px;
-margin-left: 108px;
+margin-left: 100px;
 }
 p{
   margin-top: 10px;
   margin-bottom: 22px;
-margin-left: 108px;
+margin-left: 100px;
 font-family: 'Roboto';
 font-style: normal;
 font-weight: 700;
@@ -261,10 +321,13 @@ line-height: 16px;
 const Main = styled.div`
 `
 const Main1 = styled.div`
-margin-left: 44px;
+margin-left: 33px;
+img{
+  
+}
 `
 const Input = styled.div`
-margin-left: 40px;
+margin-left: 30px;
 input{
   width: 299px;
 height: 52px;
@@ -279,6 +342,23 @@ color: #7E7E7E;
 }
 `
 const Botao = styled.div`
+margin-top: 12px;
+button{
+  width: 319px;
+height: 52px;
+background: #FF4791;
+border-radius: 8px;
+font-family: 'Roboto';
+font-style: normal;
+font-weight: 700;
+font-size: 14px;
+line-height: 16px;
+color: #FFFFFF;
+}
+`
+const Main3 = styled.div`
+margin-top: 12px;
+margin-bottom: 25px;
 `
 const Display = styled.div`
 display: flex;
@@ -293,6 +373,7 @@ font-weight: 400;
 font-size: 16px;
 line-height: 19px;
 }
+
 `
 const Container1 = styled.div`
 
