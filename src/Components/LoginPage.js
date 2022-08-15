@@ -4,16 +4,12 @@ import axios from "axios";
 import styled from "styled-components";
 import TokenContext from "../Contexts/AuthContext";
 
-
 export default function LoginPage() {
-  
   const navigate = useNavigate();
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
-  // const { item, setDadoshome } = useContext(TokenContext);
-  const localMember = JSON.parse(localStorage.getItem("member"))
-  
-
+  const { setToken } = useContext(TokenContext);
+  const memberShip = JSON.parse(localStorage.getItem("member"));
 
   function confirmarLogin(event) {
     event.preventDefault();
@@ -23,31 +19,18 @@ export default function LoginPage() {
       password,
     });
     promise.then((response) => {
-     const {data} = response;
-    
-if(localMember !== null){
-  localStorage.setItem("token", JSON.stringify({
-    headers: {
-      "Authorization": `Bearer ${data.token}`
-    }
-  }));
-  JSON.parse(localStorage.getItem("dadositem"))
-  
-  navigate("/home");
-  console.log("if")
-}else{
-  localStorage.setItem("token", JSON.stringify({
-    headers: {
-      "Authorization": `Bearer ${data.token}`
-    }
-  }));
-  navigate("/subscriptions");
-  console.log("else")
-}
+      const { data } = response;
 
-     
-
-      
+      if (memberShip !== null) {
+        navigate("/home");
+      } else {
+        setToken(data.token);
+        navigate("/subscriptions");
+        localStorage.setItem("token", JSON.stringify(data.token));
+      }
+    });
+    promise.catch((err) => {
+      alert("Falha ao fazer seu Login");
     });
   }
 
@@ -99,7 +82,7 @@ const Botao = styled.div`
     width: 303px;
     height: 45px;
 
-    background: #FF4791;
+    background: #ff4791;
     border-radius: 4.63636px;
     font-family: "Lexend Deca";
     font-style: normal;
@@ -138,7 +121,7 @@ const Container = styled.div`
   align-items: center;
   justify-content: center;
   flex-direction: column;
-  background: #0E0E13;
+  background: #0e0e13;
 `;
 
 const Frase = styled.div`
@@ -156,19 +139,17 @@ const Frase = styled.div`
   text-align: center;
   text-decoration-line: underline;
 
-  color: #FFFFFF;
+  color: #ffffff;
 `;
 
 const Logo = styled.div`
-display: flex;
-  color: #FFFFFF;
+  display: flex;
+  color: #ffffff;
   font-size: 50px;
-  h2{
+  h2 {
     padding-top: 0.5px;
     padding-left: 10px;
-    color: #FF4791;
+    color: #ff4791;
     font-size: 60px;
   }
-
-
-`
+`;

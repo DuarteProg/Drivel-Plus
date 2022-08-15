@@ -1,42 +1,51 @@
 import styled from "styled-components"
-import { useContext } from "react";
-import TokenContext from "../Contexts/AuthContext";
+
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 
 export default function TelaHome(){
-    const { item, dadoshome } = useContext(TokenContext);
+    
     const navigate = useNavigate();
-    console.log(dadoshome)
     const localToken = JSON.parse(localStorage.getItem("token"))
     const localNome = JSON.parse(localStorage.getItem("nome"))
+    const localHome = JSON.parse(localStorage.getItem("itemHome"))
+    const localCartao = JSON.parse(localStorage.getItem("creditCard"))
+    
     
 
     function TrocarPlano(){ 
-        
+        const config = {
+            headers: {
+              "Authorization": `Bearer ${localToken}`
+            }
+          }
+
       const URL = `https://mock-api.driven.com.br/api/v4/driven-plus/subscriptions`;
       const promise = axios.post(URL ,
-        item.creditCard
-    , localToken)
+        localCartao
+    , config)
       promise.then((response) => {
-       const {data} = response;
-       console.log(data);
+       
        navigate("/subscriptions");
       });
     }
 
     function CancelarPlano(){
-        
+        const config = {
+            headers: {
+              "Authorization": `Bearer ${localToken}`
+            }
+          }
+
             const promise = axios.delete(
               `https://mock-api.driven.com.br/api/v4/driven-plus/subscriptions`,
-              localToken
+              config
             );
           
           
           promise.then((response) => {
-            const { data } = response;
-            console.log(data)
+            
             navigate("/subscriptions");
 
           });
@@ -45,7 +54,7 @@ export default function TelaHome(){
 
     JSON.parse(localStorage.getItem("dadositem"))
 
-// função brinde
+//função brinde
 function Brinde(props){
 const {title, link} = props
 return (
@@ -59,16 +68,17 @@ return (
 
 // função planHome
 function PlanHome(props){
-const { image } = props.item
+const {image} = props.localHome
 return(
     <Container1>
+      
         <Header1>
 <img src={image} alt="imagem"/>
 <ion-icon name="person-circle"></ion-icon>
 </Header1>
 <Nome1>Olá, {localNome}</Nome1>
 <Main1>{
-item.data.membership.perks.map((brindes, index) => {
+localHome.membership.perks.map((brindes, index) => {
 const {title, link} = brindes;
 return <Brinde title={title} key={index} link={link}/>
 })
@@ -82,8 +92,8 @@ return <Brinde title={title} key={index} link={link}/>
 
     return (
         <Container>
-            {(item.length === 0)?"":
-            <PlanHome item={item.data.membership}/>}
+            {(localHome.membership.length === 0)?"":
+            <PlanHome localHome={localHome.membership}/>}
         </Container>
     )
 }

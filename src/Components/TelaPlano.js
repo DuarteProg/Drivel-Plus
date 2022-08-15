@@ -20,6 +20,7 @@ export default function TelaPlano(){
     const [plano, setPlano] = useState("");
     const [click, setClick] = useState(false)
     const localToken = JSON.parse(localStorage.getItem("token"))
+  
     
     
   
@@ -35,36 +36,51 @@ export default function TelaPlano(){
         expirationDate
       }
       localStorage.setItem("dadositem", JSON.stringify(item))
+      const config = {
+        headers: {
+          "Authorization": `Bearer ${localToken}`
+        }
+      }
 
     const URL = `https://mock-api.driven.com.br/api/v4/driven-plus/subscriptions`;
     const promise = axios.post(URL , creditCard, 
-      localToken
+      config
       
   )
     promise.then((response) => {
       const {data} = response;
       setDadosHome(creditCard)
       setItem({data: data, creditCard: creditCard})
-     console.log({data: data, creditCard: creditCard} );
-     navigate("/home");
+      localStorage.setItem("itemHome", JSON.stringify(data))
+      localStorage.setItem("creditCard", JSON.stringify(creditCard))
+     navigate("/home"); // mudar para home
+    });
+    promise.catch((err) => {
+      alert("Falha ao fazer sua assinatura");
     });
   }
   localStorage.setItem("member", JSON.stringify(membershipId))
   localStorage.setItem("nome", JSON.stringify(cardName))
   
   
+  
 
     //effet do get
     useEffect(() => {
+      const config = {
+        headers: {
+          "Authorization": `Bearer ${localToken}`
+        }
+      }
       const promise = axios.get(
         `https://mock-api.driven.com.br/api/v4/driven-plus/subscriptions/memberships/${planoID}`,
-        localToken
+        config
       );
     
     
     promise.then((response) => {
       const { data } = response;
-      console.log(data)
+      
       setPlano(data)
       setItem({data: data})
     });
@@ -97,7 +113,7 @@ return(
 </Logo1>
 <Main1>
 <Display>
-<img src={beneficios}/> <p>Benefícios:</p>
+<img src={beneficios} alt="beneficios"/> <p>Benefícios:</p>
 </Display>
 {plano.perks.map((perk, index) => {
  const {title, id, membershipId} = perk;

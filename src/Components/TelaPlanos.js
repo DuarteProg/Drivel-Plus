@@ -1,5 +1,5 @@
-import { useContext, useState, useEffect } from "react";
-import TokenContext from "../Contexts/AuthContext";
+import { useState, useEffect } from "react";
+// import TokenContext from "../Contexts/AuthContext";
 import axios from "axios";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
@@ -8,23 +8,27 @@ import { Link } from "react-router-dom";
 
 
 export default function TelaPlanos() {
-  const { token } = useContext(TokenContext);
+  // const { token } = useContext(TokenContext);
 const [planos, setPlanos] = useState()
 const localToken = JSON.parse(localStorage.getItem("token"))
 
 useEffect(() => {
+
+  const config = {
+    headers: {
+      "Authorization": `Bearer ${localToken}`
+    }
+  }
+
   const promise = axios.get(
-    `https://mock-api.driven.com.br/api/v4/driven-plus/subscriptions/memberships`,
-    localToken
-  );
+    `https://mock-api.driven.com.br/api/v4/driven-plus/subscriptions/memberships`, config);
 
 
 promise.then((response) => {
   const { data } = response;
   setPlanos(data)
-  
 });
-}, [])
+}, []);
 
 // tela de planos!
 function Plans(props){

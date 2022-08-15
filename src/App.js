@@ -6,6 +6,7 @@ import TelaPlanos from "./Components/TelaPlanos";
 import TelaPlano from "./Components/TelaPlano";
 import TelaHome from "./Components/TelaHome" 
 
+
 import TokenContext from "./Contexts/AuthContext";
 
 export default function App() {
@@ -23,6 +24,7 @@ export default function App() {
          <Route path="/subscriptions" element={<TelaPlanos />}/> 
          <Route path="/subscriptions/:planoID" element={<TelaPlano />} /> 
          <Route path="/home" element={<TelaHome />} /> 
+         
         </Routes>
       </BrowserRouter>
     </TokenContext.Provider>
