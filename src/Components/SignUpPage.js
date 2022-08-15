@@ -61,7 +61,6 @@ export default function SignUpPage() {
             <input
               type="cpf"
               value={cpf}
-              alt="cpf"
               placeholder="CPF"
               required
               onChange={(e) => setCpf(e.target.value)}

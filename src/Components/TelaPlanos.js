@@ -12,6 +12,7 @@ export default function TelaPlanos() {
 const [planos, setPlanos] = useState()
 const localToken = JSON.parse(localStorage.getItem("token"))
 
+
 useEffect(() => {
 
   const config = {

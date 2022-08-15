@@ -24,9 +24,9 @@ export default function LoginPage() {
       if (memberShip !== null) {
         navigate("/home");
       } else {
-        setToken(data.token);
-        navigate("/subscriptions");
+        
         localStorage.setItem("token", JSON.stringify(data.token));
+        navigate("/subscriptions");
       }
     });
     promise.catch((err) => {

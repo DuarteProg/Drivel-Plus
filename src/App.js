@@ -10,13 +10,13 @@ import TelaHome from "./Components/TelaHome"
 import TokenContext from "./Contexts/AuthContext";
 
 export default function App() {
-  const [token, setToken] = useState();
+
   const [member, setMember] = useState()
   const [item, setItem] = useState();
   const [dadosHome, setDadosHome] = useState()
 
   return (
-    <TokenContext.Provider value={{token, setToken, member, setMember, item, setItem, dadosHome, setDadosHome}}>
+    <TokenContext.Provider value={{ member, setMember, item, setItem, dadosHome, setDadosHome}}>
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<LoginPage />} />
