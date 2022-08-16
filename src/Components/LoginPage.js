@@ -8,7 +8,6 @@ export default function LoginPage() {
   const navigate = useNavigate();
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
-  const { setToken } = useContext(TokenContext);
   const memberShip = JSON.parse(localStorage.getItem("member"));
 
   function confirmarLogin(event) {

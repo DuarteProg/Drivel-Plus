@@ -59,7 +59,7 @@ export default function SignUpPage() {
             />{" "}
             <br />
             <input
-              type="cpf"
+              type="text"
               value={cpf}
               placeholder="CPF"
               required

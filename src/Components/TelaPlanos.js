@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 // import TokenContext from "../Contexts/AuthContext";
 import axios from "axios";
 import styled from "styled-components";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 
 
@@ -11,7 +11,7 @@ export default function TelaPlanos() {
   // const { token } = useContext(TokenContext);
 const [planos, setPlanos] = useState()
 const localToken = JSON.parse(localStorage.getItem("token"))
-
+const navigate = useNavigate();
 
 useEffect(() => {
 
@@ -44,7 +44,6 @@ return (
 )
 }
 
-
   return (
     <Container>
         <Logo>
@@ -57,6 +56,7 @@ return <Plans key={id} id={id} image={image} price={price}
 />
 })}
       </Plano>
+
     </Container>
   );
 }
